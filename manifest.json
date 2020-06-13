@@ -5,7 +5,6 @@
   "author": "Yong Su",
   "manifest_version": 2,
   "permissions": [
-    "<all_urls>",
     "activeTab",
     "storage",
     "tabs"
