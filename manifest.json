@@ -26,6 +26,7 @@
         "<all_urls>"
       ],
       "js": [
+        "helper.js",
         "content/content.js"
       ]
     }

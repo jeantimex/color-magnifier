@@ -78,6 +78,7 @@
       const context = canvas.getContext('2d');
       // Assuming px,py as starting coordinates and hx,hy be the width and the height of the image to be extracted
       context.imageSmoothingEnabled = false;
+      context.globalCompositeOperation = 'copy';
       context.drawImage(img, 0, 0, WIDTH, HEIGHT);
 
       imageData = context.getImageData(0, 0, WIDTH, HEIGHT);
@@ -195,7 +196,15 @@
       if (!savedColors.includes(color)) {
         savedColors.push(color);
         chrome.storage.sync.set({savedColors}, function () {
-          console.log(savedColors);
+          //console.log(savedColors);
+          const [red, green, blue, alpha] = color.split(',');
+          const hex = RGBToHex(red, green, blue);
+
+          navigator.clipboard.writeText(hex).then(() => {
+            quit();
+          }, (error) => {
+            quit();
+          });
         });
       }
     });

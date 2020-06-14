@@ -6,6 +6,7 @@
 
 body {
   width: 225px;
+  font-size: 14px;
 }
 
 ul, li {
@@ -13,13 +14,48 @@ ul, li {
   user-select: none;
 }
 
-ul.sub-menu li {
-  height: 20px;
+img.menu-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+}
+
+ul.main-menu {
+  padding: 5px 0 5px 0;
+}
+
+li.menu-separator {
+  height: 10px;
   display: flex;
   align-items: center;
 }
 
+li.menu-separator hr {
+  flex: 1;
+  height: 1px;
+  background-color: #ccc;
+  border: none;
+}
+
+li.menu-title {
+  color: #666;
+}
+
+li.menu-title,
+ul.sub-menu li {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px 0 20px;
+}
+
 ul.sub-menu li:hover {
-  background-color: #2963C9;
+  background-color: #6295f1;
   color: #FFF;
+}
+
+ul.sub-menu li div.color-block {
+  width: 13px;
+  height: 13px;
+  margin-right: 8px;
 }
