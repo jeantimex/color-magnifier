@@ -91,6 +91,9 @@
       document.removeEventListener('mousemove', updateSnipper);
       document.addEventListener('mousemove', updateSnipper);
 
+      document.removeEventListener('mousedown', saveData);
+      document.addEventListener('mousedown', saveData);
+
       document.removeEventListener('keydown', handleKeydown);
       document.addEventListener('keydown', handleKeydown);
     };
@@ -100,6 +103,8 @@
   }
 
   function updateSnipper(event) {
+    event.stopPropagation();
+
     if (!imageData) {
       return;
     }
@@ -150,6 +155,8 @@
   }
 
   function handleKeydown(event) {
+    event.stopPropagation();
+
     if (event.key === 'Escape') {
       quit();
     }
@@ -161,6 +168,37 @@
 
     document.removeEventListener('mousemove', updateSnipper);
     document.removeEventListener('keydown', handleKeydown);
+  }
+
+  /**
+   * @param {Event} event 
+   */
+  function saveData(event) {
+    event.stopPropagation();
+
+    if (!imageData) {
+      return;
+    }
+
+    const x = event.clientX;
+    const y = event.clientY;
+    // locate index of current pixel
+    const centerIdx = (y * imageData.width + x) * 4;
+
+    const red = imageData.data[centerIdx];
+    const green = imageData.data[centerIdx + 1];
+    const blue = imageData.data[centerIdx + 2];
+    const alpha = imageData.data[centerIdx + 3];
+
+    chrome.storage.sync.get(['savedColors'], function ({savedColors}) {
+      const color = `${red},${green},${blue},${alpha}`;
+      if (!savedColors.includes(color)) {
+        savedColors.push(color);
+        chrome.storage.sync.set({savedColors}, function () {
+          console.log(savedColors);
+        });
+      }
+    });
   }
 
   chrome.runtime.onMessage.addListener(

@@ -1,3 +1,9 @@
+chrome.runtime.onInstalled.addListener(
+  function() {
+    chrome.storage.sync.set({savedColors: []});
+  }
+);
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.cmd === 'capture') {

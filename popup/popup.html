@@ -6,7 +6,34 @@
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
-  <button id="btnPickColor">Pick Color</button>
+  <ul class="main-menu">
+    <li>
+      <ul class="sub-menu">
+        <li id="btnPickColor">
+          <span>Pick Color</span>
+        </li>
+        <li>
+          <span>Colors & Formats...</span>
+        </li>
+      </ul>
+    </li>
+    
+    <li>
+      <hr />
+    </li>
+    <li>
+      <span>Recently Picked Colors</span>
+    </li>
+
+    <li>
+      <ul id="picked-colors-list" class="sub-menu">
+        <li>
+          <div class="color-block"></div>
+          <span class="color-value"></span>
+        </li>
+      </ul>
+    </li>
+  </ul>
   <script src="popup.js"></script>
 </body>
 </html>

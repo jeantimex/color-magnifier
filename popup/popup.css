@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 225px;
+}
+
+ul, li {
+  list-style: none;
+  user-select: none;
+}
+
+ul.sub-menu li {
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+ul.sub-menu li:hover {
+  background-color: #2963C9;
+  color: #FFF;
+}
