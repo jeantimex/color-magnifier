@@ -62,3 +62,24 @@ function lightOrDark(color) {
   // Using the HSP value, determine whether the color is light or dark
   return hsp > 160 ? 'light' : 'dark';
 }
+
+function blink(element, callback) {
+  setTimeout(function() {
+    element.style.opacity = (element.style.opacity === '0' ? '1' : '0');
+  }, 50);
+  
+  setTimeout(function() {
+    element.style.opacity = (element.style.opacity === '0' ? '1' : '0');
+  }, 100);
+
+  setTimeout(function() {
+    element.style.opacity = (element.style.opacity === '0' ? '1' : '0');
+  }, 150);
+  
+  setTimeout(function() {
+    element.style.opacity = (element.style.opacity === '0' ? '1' : '0');
+    if (callback) {
+      callback();
+    }
+  }, 200);
+}

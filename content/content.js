@@ -35,6 +35,7 @@
     snipperElement.style.flexWrap = 'wrap';
     snipperElement.style.margin = '0px';
     snipperElement.style.padding = '0px';
+    snipperElement.style.opacity = '1';
 
     snipperElement.style.width = boxSize * count + 'px';
     snipperElement.style.height = boxSize * count + 'px';
@@ -77,6 +78,7 @@
     snipperElement.innerHTML = '';
 
     // Create the color boxes inside the snipper.
+    const fragment = document.createDocumentFragment();
     for (let i = 0; i < count * count; i++) {
       const colorBox = document.createElement('div');
       colorBox.id = 'color-box-' + i;
@@ -88,8 +90,9 @@
       if (i === parseInt((count * count) / 2)) {
         colorBox.style.border = '1px solid #FFF';
       }
-      snipperElement.appendChild(colorBox);
+      fragment.appendChild(colorBox);
     }
+    snipperElement.appendChild(fragment);
   }
 
   /**
@@ -135,14 +138,14 @@
       createSnipper();
 
       // Now it's ready to pick color using snipper.
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mousemove', handleMouseMove, false);
+      document.addEventListener('mousemove', handleMouseMove, false);
 
-      document.removeEventListener('mousedown', saveData);
-      document.addEventListener('mousedown', saveData);
+      document.removeEventListener('mousedown', saveData, false);
+      document.addEventListener('mousedown', saveData, false);
 
-      document.removeEventListener('keydown', handleKeydown);
-      document.addEventListener('keydown', handleKeydown);
+      document.removeEventListener('keydown', handleKeydown, false);
+      document.addEventListener('keydown', handleKeydown, false);
     };
 
     img.src = dataUri;
@@ -151,6 +154,7 @@
 
   function handleMouseMove(event) {
     event.stopPropagation();
+    event.stopImmediatePropagation();
 
     centerX = event.clientX;
     centerY = event.clientY;
@@ -219,6 +223,7 @@
 
   function handleKeydown(event) {
     event.stopPropagation();
+    event.stopImmediatePropagation();
 
     if (event.key === 'Escape') {
       quit();
@@ -309,7 +314,9 @@
           const hex = RGBToHex(red, green, blue);
 
           navigator.clipboard.writeText(hex).then(() => {
-            quit();
+            blink(snipperElement, () => {
+              quit();
+            });
           }, (error) => {
             quit();
           });
@@ -322,7 +329,9 @@
     function(request, sender, sendResponse) {
       if (request.cmd === 'start') {
         updateImageData(request.dataUri);
+        window.addEventListener('resize', quit);
       } else if (request.cmd === 'quit') {
+        window.removeEventListener('resize', quit);
         quit();
       }
     }
