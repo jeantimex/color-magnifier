@@ -20,12 +20,12 @@
     snipperElement.style.width = '90px';
     snipperElement.style.height = '90px';
     snipperElement.style.borderRadius = '50%';
-    snipperElement.style.border = 'solide #FFF 3px';
+    snipperElement.style.border = 'solid #666 2px';
     snipperElement.style.overflow = 'hidden';
     snipperElement.style.display = 'flex';
     snipperElement.style.backgroundColor = '#999';
     snipperElement.style.cursor = 'none';
-    snipperElement.style.boxSizing = 'border-box';
+    snipperElement.style.boxSizing = 'content-box';
     snipperElement.style.flexWrap = 'wrap';
     snipperElement.style.margin = '0px';
     snipperElement.style.padding = '0px';
@@ -56,6 +56,8 @@
     if (snipperContainer) {
       snipperContainer.remove();
     }
+    snipperContainer = null;
+    snipperElement = null;
   }
 
   /**
@@ -152,6 +154,15 @@
         alpha = 1;
       }
       colorBox.style.backgroundColor = `rgba(${red},${green},${blue},${alpha})`;
+
+      if (i === 40) {
+        const hex = '#' + RGBToHex(red, green, blue, alpha);
+        if (lightOrDark(hex) === 'light') {
+          colorBox.style.borderColor = '#666';
+        } else {
+          colorBox.style.borderColor = '#FFF';
+        }
+      }
     }
   }
 
@@ -213,7 +224,9 @@
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if (request.cmd === 'start') {
-       updateImageData(request.dataUri);
+        updateImageData(request.dataUri);
+      } else if (request.cmd === 'quit') {
+        quit();
       }
     }
   );
