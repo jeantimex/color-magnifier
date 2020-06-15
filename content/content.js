@@ -3,23 +3,28 @@
   let imageData = null;
   let snipperContainer = null;
   let snipperElement = null;
+  let snipperInfo = null;
   let infoValue = null;
+
+  let boxSize = 4; // 4px
+  const count = 25;
+
+  let centerX = 0;
+  let centerY = 0;
 
   function createSnipper() {
     // Create the container.
     snipperContainer = document.createElement('div');
     snipperContainer.style.position = 'absolute';
-    snipperContainer.style.width = '90px';
-    snipperContainer.style.height = '90px';
     snipperContainer.style.display = 'none';
     snipperContainer.style.zIndex = 999999;
+    snipperContainer.style.width = boxSize * count + 'px';
+    snipperContainer.style.height = boxSize * count + 'px';
 
     // Create the snipper.
     snipperElement = document.createElement('div');
     snipperElement.id = 'com.jeantimex.crx.color.snipper';
     snipperElement.style.position = 'absolute';
-    snipperElement.style.width = '90px';
-    snipperElement.style.height = '90px';
     snipperElement.style.borderRadius = '50%';
     snipperElement.style.border = 'solid #666 2px';
     snipperElement.style.overflow = 'hidden';
@@ -31,23 +36,12 @@
     snipperElement.style.margin = '0px';
     snipperElement.style.padding = '0px';
 
-    // Create the color boxes inside the snipper.
-    for (let i = 0; i < 81; i++) {
-      const colorBox = document.createElement('div');
-      colorBox.id = 'color-box-' + i;
-      colorBox.style.width = '10px';
-      colorBox.style.height = '10px';
-      colorBox.style.boxSizing = 'border-box';
-      colorBox.style.backgroundColor = 'red';
-
-      if (i === 40) {
-        colorBox.style.border = '1px solid #FFF';
-      }
-      snipperElement.appendChild(colorBox);
-    }
+    snipperElement.style.width = boxSize * count + 'px';
+    snipperElement.style.height = boxSize * count + 'px';
+    createSnipperColorBoxes();
 
     // info
-    const snipperInfo = document.createElement('div');
+    snipperInfo = document.createElement('div');
     snipperInfo.style.position = 'absolute';
     snipperInfo.style.boxSizing = 'border-box';
     snipperInfo.style.display = 'flex';
@@ -59,8 +53,8 @@
     snipperInfo.style.height = '34px';
     snipperInfo.style.backgroundColor = '#474f59';
     snipperInfo.style.color = '#FFF';
-    snipperInfo.style.top = (90 - 34) / 2 + 'px';
-    snipperInfo.style.left = 60 + 'px';
+    snipperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+    snipperInfo.style.left = count * boxSize / 2 + 15 + 'px';
 
     const infoTitle = document.createElement('p');
     infoTitle.style.padding = '0px';
@@ -77,6 +71,25 @@
     snipperContainer.appendChild(snipperElement);
     snipperContainer.appendChild(snipperInfo);
     document.body.appendChild(snipperContainer);
+  }
+
+  function createSnipperColorBoxes() {
+    snipperElement.innerHTML = '';
+
+    // Create the color boxes inside the snipper.
+    for (let i = 0; i < count * count; i++) {
+      const colorBox = document.createElement('div');
+      colorBox.id = 'color-box-' + i;
+      colorBox.style.width = boxSize + 'px';
+      colorBox.style.height = boxSize + 'px';
+      colorBox.style.boxSizing = 'border-box';
+      colorBox.style.backgroundColor = 'red';
+
+      if (i === parseInt((count * count) / 2)) {
+        colorBox.style.border = '1px solid #FFF';
+      }
+      snipperElement.appendChild(colorBox);
+    }
   }
 
   /**
@@ -122,8 +135,8 @@
       createSnipper();
 
       // Now it's ready to pick color using snipper.
-      document.removeEventListener('mousemove', updateSnipper);
-      document.addEventListener('mousemove', updateSnipper);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mousemove', handleMouseMove);
 
       document.removeEventListener('mousedown', saveData);
       document.addEventListener('mousedown', saveData);
@@ -136,35 +149,39 @@
     img.style.position = 'absolute';
   }
 
-  function updateSnipper(event) {
+  function handleMouseMove(event) {
     event.stopPropagation();
 
+    centerX = event.clientX;
+    centerY = event.clientY;
+
+    updateSnipper(centerX, centerY);
+  }
+
+  function updateSnipper(centerX, centerY) {
     if (!imageData) {
       return;
     }
 
-    // Prepare your X Y coordinates which you will be fetching from your mouse loc
-    let x = event.clientX;
-    let y = event.clientY;
     // locate index of current pixel
-    const centerIdx = (y * imageData.width + x) * 4;
+    const centerIdx = (centerY * imageData.width + centerX) * 4;
 
     let red = imageData.data[centerIdx];
-    let green = imageData.data[centerIdx+1];
-    let blue = imageData.data[centerIdx+2];
-    let alpha = imageData.data[centerIdx+3];
+    let green = imageData.data[centerIdx + 1];
+    let blue = imageData.data[centerIdx + 2];
+    let alpha = imageData.data[centerIdx + 3];
     // Output
     //console.log('pix x ' + x +' y '+y+ ' index '+index +' COLOR '+red+','+green+','+blue+','+alpha);
 
     snipperContainer.style.display = '';
-    snipperContainer.style.left = x - 45 + 'px';
-    snipperContainer.style.top = y - 45 + 'px';
+    snipperContainer.style.left = centerX - (count * boxSize / 2) + 'px';
+    snipperContainer.style.top = centerY - (count * boxSize / 2) + 'px';
 
-    const startX = x - 4;
-    const startY = y - 4;
-    for (let i = 0; i < 81; i++) {
-      x = startX + (i % 9);
-      y = startY + parseInt(i / 9);
+    const startX = centerX - parseInt(count / 2);
+    const startY = centerY - parseInt(count / 2);
+    for (let i = 0; i < count * count; i++) {
+      const x = startX + (i % count);
+      const y = startY + parseInt(i / count);
       //console.log(x, y);
 
       const colorBox = snipperElement.querySelector('#color-box-' + i);
@@ -174,9 +191,9 @@
 
       if (index >= 0 && index + 3 < imageData.data.length) {
         red = imageData.data[index];
-        green = imageData.data[index+1];
-        blue = imageData.data[index+2];
-        alpha = imageData.data[index+3];
+        green = imageData.data[index + 1];
+        blue = imageData.data[index + 2];
+        alpha = imageData.data[index + 3];
         //console.log(red, green, blue, alpha);
       } else {
         red = 255;
@@ -186,7 +203,7 @@
       }
       colorBox.style.backgroundColor = `rgba(${red},${green},${blue},${alpha})`;
 
-      if (i === 40) {
+      if (i === parseInt(count * count / 2)) {
         const hex = '#' + RGBToHex(red, green, blue, alpha);
         if (lightOrDark(hex) === 'light') {
           colorBox.style.borderColor = '#666';
@@ -205,7 +222,53 @@
 
     if (event.key === 'Escape') {
       quit();
+    } else if (event.key === '[') {
+      shrink();
+    } else if (event.key === ']') {
+      enlarge();
     }
+  }
+
+  function shrink() {
+    if (boxSize <= 4) {
+      return;
+    }
+
+    boxSize--;
+
+    snipperContainer.style.width = boxSize * count + 'px';
+    snipperContainer.style.height = boxSize * count + 'px';
+
+    snipperElement.style.width = boxSize * count + 'px';
+    snipperElement.style.height = boxSize * count + 'px';
+
+    snipperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+    snipperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+
+    createSnipperColorBoxes();
+
+    updateSnipper(centerX, centerY);
+  }
+
+  function enlarge() {
+    if (boxSize >= 10) {
+      return;
+    }
+
+    boxSize++;
+
+    snipperContainer.style.width = boxSize * count + 'px';
+    snipperContainer.style.height = boxSize * count + 'px';
+
+    snipperElement.style.width = boxSize * count + 'px';
+    snipperElement.style.height = boxSize * count + 'px';
+
+    snipperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+    snipperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+
+    createSnipperColorBoxes();
+
+    updateSnipper(centerX, centerY);
   }
 
   function quit() {
