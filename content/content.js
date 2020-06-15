@@ -3,6 +3,7 @@
   let imageData = null;
   let snipperContainer = null;
   let snipperElement = null;
+  let infoValue = null;
 
   function createSnipper() {
     // Create the container.
@@ -45,7 +46,36 @@
       snipperElement.appendChild(colorBox);
     }
 
+    // info
+    const snipperInfo = document.createElement('div');
+    snipperInfo.style.position = 'absolute';
+    snipperInfo.style.boxSizing = 'border-box';
+    snipperInfo.style.display = 'flex';
+    snipperInfo.style.flexDirection = 'column';
+    snipperInfo.style.justifyContent = 'space-between';
+    snipperInfo.style.padding = '5px';
+    snipperInfo.style.fontSize = '10px';
+    snipperInfo.style.width = '78px';
+    snipperInfo.style.height = '34px';
+    snipperInfo.style.backgroundColor = '#474f59';
+    snipperInfo.style.color = '#FFF';
+    snipperInfo.style.top = (90 - 34) / 2 + 'px';
+    snipperInfo.style.left = 60 + 'px';
+
+    const infoTitle = document.createElement('p');
+    infoTitle.style.padding = '0px';
+    infoTitle.style.margin = '0px';
+    infoTitle.textContent = 'Display Hex';
+    snipperInfo.appendChild(infoTitle);
+
+    infoValue = document.createElement('p');
+    infoValue.style.padding = '0px';
+    infoValue.style.margin = '0px';
+    infoValue.id = 'color-info-value';
+    snipperInfo.appendChild(infoValue);
+
     snipperContainer.appendChild(snipperElement);
+    snipperContainer.appendChild(snipperInfo);
     document.body.appendChild(snipperContainer);
   }
 
@@ -58,6 +88,7 @@
     }
     snipperContainer = null;
     snipperElement = null;
+    infoValue = null;
   }
 
   /**
@@ -162,6 +193,9 @@
         } else {
           colorBox.style.borderColor = '#FFF';
         }
+
+        infoValue.textContent = red.toString(16).toUpperCase() + ' ' +
+        green.toString(16).toUpperCase() + ' ' + blue.toString(16).toUpperCase();
       }
     }
   }
