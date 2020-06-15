@@ -5,12 +5,43 @@
   let snipperElement = null;
   let snipperInfo = null;
   let infoValue = null;
+  let notification = null;
 
   let boxSize = 4; // 4px
   const count = 25;
 
   let centerX = 0;
   let centerY = 0;
+
+  function createNotification() {
+    notification = document.createElement('div');
+    notification.style.height = 20 + 'px';
+    notification.color = '#333';
+    notification.style.padding = '4px 10px';
+    notification.style.display = 'flex';
+    notification.style.opacity = '0';
+    notification.style.alignItems = 'center';
+    notification.style.position = 'fixed';
+    notification.style.zIndex = 999999;
+    notification.style.top = '0px';
+    notification.style.left = '50%';
+    notification.style.transform = 'translate(-50%, 0)';
+    notification.style.borderRadius = '3px';
+    notification.style.boxShadow = '0px 0px 1px 1px #999';
+    notification.style.transition = 'opacity 0.2s, top 0.2s';
+    notification.style.backgroundColor = '#FFF';
+
+    const colorBlock = document.createElement('div');
+    colorBlock.style.width = '13px';
+    colorBlock.style.height = '13px';
+    colorBlock.style.marginRight = '8px';
+    notification.appendChild(colorBlock);
+
+    const colorValue = document.createElement('p');
+    notification.appendChild(colorValue);
+
+    document.body.appendChild(notification);
+  }
 
   function createSnipper() {
     // Create the container.
@@ -215,8 +246,21 @@
           colorBox.style.borderColor = '#FFF';
         }
 
-        infoValue.textContent = red.toString(16).toUpperCase() + ' ' +
-        green.toString(16).toUpperCase() + ' ' + blue.toString(16).toUpperCase();
+        let r = red.toString(16).toUpperCase();
+        let g = green.toString(16).toUpperCase();
+        let b = blue.toString(16).toUpperCase();
+
+        if (r.length === 1) {
+          r = '0' + r;
+        }
+        if (g.length === 1) {
+          g = '0' + g;
+        }
+        if (b.length === 1) {
+          b = '0' + b;
+        }
+
+        infoValue.textContent = r + ' ' + g + ' ' + b;
       }
     }
   }
@@ -276,6 +320,37 @@
     updateSnipper(centerX, centerY);
   }
 
+  function showNotification(red, green, blue, alpha) {
+    const colorBlock = notification.querySelector('div');
+    colorBlock.style.backgroundColor = `rgba(${red},${green},${blue},${alpha})`;
+
+    let r = parseInt(red).toString(16).toUpperCase();
+    let g = parseInt(green).toString(16).toUpperCase();
+    let b = parseInt(blue).toString(16).toUpperCase();
+
+    if (r.length === 1) {
+      r = '0' + r;
+    }
+    if (g.length === 1) {
+      g = '0' + g;
+    }
+    if (b.length === 1) {
+      b = '0' + b;
+    }
+
+    const colorValue = notification.querySelector('p');
+    colorValue.innerHTML = 'Copied ' + '<span style="font-weight:bold;">' +
+      r + g + b + '</span> to clipboard!';
+
+    notification.style.opacity = '1';
+    notification.style.top = '10px';
+
+    setTimeout(function () {
+      notification.style.opacity = '0';
+      notification.style.top = '0px';
+    }, 2000);
+  }
+
   function quit() {
     imageData = null;
     removeSnipper();
@@ -315,6 +390,7 @@
 
           navigator.clipboard.writeText(hex).then(() => {
             blink(snipperElement, () => {
+              showNotification(red, green, blue, alpha);
               quit();
             });
           }, (error) => {
@@ -325,11 +401,16 @@
     });
   }
 
+  createNotification();
+
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if (request.cmd === 'start') {
         updateImageData(request.dataUri);
         window.addEventListener('resize', quit);
+      } else if (request.cmd === 'copy') {
+        const [red, green, blue, alpha] = request.savedColor.split(',');
+        showNotification(red, green, blue, alpha);
       } else if (request.cmd === 'quit') {
         window.removeEventListener('resize', quit);
         quit();

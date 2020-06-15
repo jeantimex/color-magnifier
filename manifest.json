@@ -1,6 +1,6 @@
 {
-  "name": "Color Snipper",
-  "description": "Color Snipper",
+  "name": "Color Snapper",
+  "description": "Color Snapper",
   "version": "1.0",
   "author": "Yong Su",
   "manifest_version": 2,
@@ -17,7 +17,7 @@
   },
   "browser_action": {
     "default_popup": "popup/popup.html",
-    "default_title": "Color Snipper"
+    "default_title": "Color Snapper"
   },
   "options_page": "",
   "content_scripts": [
