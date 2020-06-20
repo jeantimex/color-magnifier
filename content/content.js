@@ -65,7 +65,7 @@
     snapperElement.style.border = 'solid #666 0px';
     snapperElement.style.overflow = 'hidden';
     snapperElement.style.backgroundColor = '#999';
-    //snapperElement.style.cursor = 'none';
+    snapperElement.style.cursor = 'none';
     snapperElement.style.borderStyle = 'solid';
     snapperElement.style.borderWidth = containerBorder + 'px';
     snapperElement.style.boxSizing = 'content-box';
