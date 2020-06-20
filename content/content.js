@@ -1,6 +1,7 @@
 (function () {
   const gridColor = '#EEE'
   const containerBorder = 6;
+  const count = 25;
 
   // Caches the screenshot image data.
   let imageData = null;
@@ -13,7 +14,6 @@
   let notification = null;
 
   let boxSize = 4; // 4px
-  const count = 25;
 
   let centerX = 0;
   let centerY = 0;
@@ -104,9 +104,9 @@
     snapperInfo.style.padding = '5px';
     snapperInfo.style.fontSize = '10px';
     snapperInfo.style.width = '78px';
-    snapperInfo.style.height = '34px';
+    snapperInfo.style.height = '36px';
     snapperInfo.style.backgroundColor = '#474f59';
-    snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+    snapperInfo.style.top = (count * boxSize + 2 * containerBorder - 36) / 2 + 'px';
     snapperInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
     snapperInfo.style.boxShadow = '0 0 3px 1px #666';
 
@@ -114,12 +114,16 @@
     infoTitle.style.padding = '0px';
     infoTitle.style.margin = '0px';
     infoTitle.textContent = 'Display Hex';
+    infoTitle.style.fontSize = '11px';
+    infoTitle.style.lineHeight = '12px';
     snapperInfo.appendChild(infoTitle);
 
     infoValue = document.createElement('p');
     infoValue.style.padding = '0px';
     infoValue.style.margin = '0px';
     infoValue.id = 'color-info-value';
+    infoValue.style.fontSize = '11px';
+    infoValue.style.lineHeight = '12px';
     snapperInfo.appendChild(infoValue);
 
     snapperContainer.appendChild(snapperElement);
@@ -271,7 +275,7 @@
       colorBox.style.backgroundColor = `rgba(${red},${green},${blue},${alpha})`;
 
       const hex = '#' + RGBToHex(red, green, blue, alpha);
-      colorBox.style.borderColor = lightOrDark(hex) === 'light' ? 'rgba(200,200,200,0.3)' : 'rgba(0,0,0,0.1)';
+      colorBox.style.borderColor = lightOrDark(hex) === 'light' ? 'rgba(200,200,200,0.3)' : 'rgba(0,0,0,0.15)';
 
       if (i === parseInt(count * count / 2)) {
         if (lightOrDark(hex) === 'light') {
@@ -390,8 +394,8 @@
     }
 
     const colorValue = notification.querySelector('p');
-    colorValue.innerHTML = 'Copied ' + '<span style="font-weight:bold;">' +
-      r + g + b + '</span> to clipboard!';
+    colorValue.innerHTML = '<span style="font-weight:bold;">' +
+      r + g + b + '</span> Copied';
 
     notification.style.opacity = '1';
     notification.style.top = '10px';
