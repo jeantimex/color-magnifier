@@ -1,11 +1,14 @@
 (function () {
   const gridColor = '#EEE'
+  const containerBorder = 6;
+
   // Caches the screenshot image data.
   let imageData = null;
   let snapperContainer = null;
   let snapperElement = null;
   let snapperGrid = null;
   let snapperInfo = null;
+  let infoTitle = null;
   let infoValue = null;
   let notification = null;
 
@@ -61,15 +64,13 @@
     snapperElement.style.borderRadius = '50%';
     snapperElement.style.border = 'solid #666 0px';
     snapperElement.style.overflow = 'hidden';
-    snapperElement.style.display = 'flex';
     snapperElement.style.backgroundColor = '#999';
-    snapperElement.style.cursor = 'none';
+    //snapperElement.style.cursor = 'none';
     snapperElement.style.borderStyle = 'solid';
-    snapperElement.style.borderWidth = '4px';
+    snapperElement.style.borderWidth = containerBorder + 'px';
     snapperElement.style.boxSizing = 'content-box';
     snapperElement.style.borderColor = 'rgba(0, 0, 0, 0.2)';
-    snapperElement.style.backgroundClip = 'border-box';
-    snapperElement.style.flexWrap = 'wrap';
+    snapperElement.style.backgroundClip = 'content-box';
     snapperElement.style.margin = '0px';
     snapperElement.style.padding = '0px';
     snapperElement.style.opacity = '1';
@@ -86,7 +87,7 @@
     snapperGrid.style.cursor = 'none';
     snapperGrid.style.borderRadius = '50%';
     snapperGrid.style.border = 'solid #666 2px';
-    snapperGrid.style.boxSizing = 'content-box';
+    snapperGrid.style.boxSizing = 'border-box';
     snapperGrid.style.backgroundColor = 'transparent';
     snapperGrid.style.backgroundPosition = '0,0,0,0';
     snapperGrid.style.backgroundImage = 
@@ -105,11 +106,11 @@
     snapperInfo.style.width = '78px';
     snapperInfo.style.height = '34px';
     snapperInfo.style.backgroundColor = '#474f59';
-    snapperInfo.style.color = '#FFF';
     snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-    snapperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+    snapperInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+    snapperInfo.style.boxShadow = '0 0 3px 1px #666';
 
-    const infoTitle = document.createElement('p');
+    infoTitle = document.createElement('p');
     infoTitle.style.padding = '0px';
     infoTitle.style.margin = '0px';
     infoTitle.textContent = 'Display Hex';
@@ -135,14 +136,22 @@
     for (let i = 0; i < count * count; i++) {
       const colorBox = document.createElement('div');
       colorBox.id = 'color-box-' + i;
+      colorBox.style.position = 'absolute';
+      colorBox.style.top = parseInt(i / count) * boxSize + 'px';
+      colorBox.style.left = (i % count) * boxSize + 'px';
       colorBox.style.width = boxSize + 'px';
       colorBox.style.height = boxSize + 'px';
       colorBox.style.boxSizing = 'content-box';
       colorBox.style.backgroundColor = 'red';
-      colorBox.style.border = '0px solid #666';
+      colorBox.style.border = '1px solid #EEE';
 
       if (i === parseInt((count * count) / 2)) {
-        colorBox.style.border = '0px solid #FFF';
+        colorBox.style.boxSizing = 'border-box';
+        colorBox.style.border = '1px solid #FFF';
+        colorBox.style.width = boxSize + 1 + 'px';
+        colorBox.style.height = boxSize + 1 + 'px';
+        
+        colorBox.style.zIndex = 999999;
       }
       fragment.appendChild(colorBox);
     }
@@ -232,8 +241,8 @@
     //console.log('pix x ' + x +' y '+y+ ' index '+index +' COLOR '+red+','+green+','+blue+','+alpha);
 
     snapperContainer.style.display = '';
-    snapperContainer.style.left = centerX - (count * boxSize / 2) + 'px';
-    snapperContainer.style.top = centerY - (count * boxSize / 2) + 'px';
+    snapperContainer.style.left = centerX - (containerBorder + count * boxSize / 2) + 'px';
+    snapperContainer.style.top = centerY - (containerBorder + count * boxSize / 2) + 'px';
 
     const startX = centerX - parseInt(count / 2);
     const startY = centerY - parseInt(count / 2);
@@ -261,12 +270,18 @@
       }
       colorBox.style.backgroundColor = `rgba(${red},${green},${blue},${alpha})`;
 
+      const hex = '#' + RGBToHex(red, green, blue, alpha);
+      colorBox.style.borderColor = lightOrDark(hex) === 'light' ? 'rgba(200,200,200,0.3)' : 'rgba(0,0,0,0.1)';
+
       if (i === parseInt(count * count / 2)) {
-        const hex = '#' + RGBToHex(red, green, blue, alpha);
         if (lightOrDark(hex) === 'light') {
           colorBox.style.borderColor = '#666';
+          infoTitle.style.color = '#666';
+          infoValue.style.color = '#666';
         } else {
           colorBox.style.borderColor = '#FFF';
+          infoTitle.style.color = '#FFF';
+          infoValue.style.color = '#FFF';
         }
 
         let r = red.toString(16).toUpperCase();
@@ -283,6 +298,7 @@
           b = '0' + b;
         }
 
+        snapperInfo.style.backgroundColor = hex;
         infoValue.textContent = r + ' ' + g + ' ' + b;
       }
     }
@@ -321,7 +337,7 @@
       'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
     snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-    snapperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+    snapperInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
 
     createSnapperColorBoxes();
 
@@ -329,7 +345,7 @@
   }
 
   function enlarge() {
-    if (boxSize >= 15) {
+    if (boxSize >= 25) {
       return;
     }
 
@@ -348,7 +364,7 @@
       'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
     snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-    snapperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+    snapperInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
 
     createSnapperColorBoxes();
 
