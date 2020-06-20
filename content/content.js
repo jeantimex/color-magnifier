@@ -1,9 +1,11 @@
 (function () {
+  const gridColor = '#EEE'
   // Caches the screenshot image data.
   let imageData = null;
-  let snipperContainer = null;
-  let snipperElement = null;
-  let snipperInfo = null;
+  let snapperContainer = null;
+  let snapperElement = null;
+  let snapperGrid = null;
+  let snapperInfo = null;
   let infoValue = null;
   let notification = null;
 
@@ -43,98 +45,119 @@
     document.body.appendChild(notification);
   }
 
-  function createSnipper() {
+  function createSnapper() {
     // Create the container.
-    snipperContainer = document.createElement('div');
-    snipperContainer.style.position = 'absolute';
-    snipperContainer.style.display = 'none';
-    snipperContainer.style.zIndex = 999999;
-    snipperContainer.style.width = boxSize * count + 'px';
-    snipperContainer.style.height = boxSize * count + 'px';
+    snapperContainer = document.createElement('div');
+    snapperContainer.style.position = 'absolute';
+    snapperContainer.style.display = 'none';
+    snapperContainer.style.zIndex = 999999;
+    snapperContainer.style.width = boxSize * count + 'px';
+    snapperContainer.style.height = boxSize * count + 'px';
 
-    // Create the snipper.
-    snipperElement = document.createElement('div');
-    snipperElement.id = 'com.jeantimex.crx.color.snipper';
-    snipperElement.style.position = 'absolute';
-    snipperElement.style.borderRadius = '50%';
-    snipperElement.style.border = 'solid #666 2px';
-    snipperElement.style.overflow = 'hidden';
-    snipperElement.style.display = 'flex';
-    snipperElement.style.backgroundColor = '#999';
-    snipperElement.style.cursor = 'none';
-    snipperElement.style.boxSizing = 'content-box';
-    snipperElement.style.flexWrap = 'wrap';
-    snipperElement.style.margin = '0px';
-    snipperElement.style.padding = '0px';
-    snipperElement.style.opacity = '1';
+    // Create the snapper.
+    snapperElement = document.createElement('div');
+    snapperElement.id = 'com.jeantimex.crx.color.snapper';
+    snapperElement.style.position = 'absolute';
+    snapperElement.style.borderRadius = '50%';
+    snapperElement.style.border = 'solid #666 0px';
+    snapperElement.style.overflow = 'hidden';
+    snapperElement.style.display = 'flex';
+    snapperElement.style.backgroundColor = '#999';
+    snapperElement.style.cursor = 'none';
+    snapperElement.style.borderStyle = 'solid';
+    snapperElement.style.borderWidth = '4px';
+    snapperElement.style.boxSizing = 'content-box';
+    snapperElement.style.borderColor = 'rgba(0, 0, 0, 0.2)';
+    snapperElement.style.backgroundClip = 'border-box';
+    snapperElement.style.flexWrap = 'wrap';
+    snapperElement.style.margin = '0px';
+    snapperElement.style.padding = '0px';
+    snapperElement.style.opacity = '1';
 
-    snipperElement.style.width = boxSize * count + 'px';
-    snipperElement.style.height = boxSize * count + 'px';
-    createSnipperColorBoxes();
+    snapperElement.style.width = boxSize * count + 'px';
+    snapperElement.style.height = boxSize * count + 'px';
+    createSnapperColorBoxes();
+
+    // Snapper grid
+    snapperGrid = document.createElement('div');
+    snapperGrid.style.position = 'absolute';
+    snapperGrid.style.width = boxSize * count + 'px';
+    snapperGrid.style.height = boxSize * count + 'px';
+    snapperGrid.style.cursor = 'none';
+    snapperGrid.style.borderRadius = '50%';
+    snapperGrid.style.border = 'solid #666 2px';
+    snapperGrid.style.boxSizing = 'content-box';
+    snapperGrid.style.backgroundColor = 'transparent';
+    snapperGrid.style.backgroundPosition = '0,0,0,0';
+    snapperGrid.style.backgroundImage = 
+      'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
+      'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
     // info
-    snipperInfo = document.createElement('div');
-    snipperInfo.style.position = 'absolute';
-    snipperInfo.style.boxSizing = 'border-box';
-    snipperInfo.style.display = 'flex';
-    snipperInfo.style.flexDirection = 'column';
-    snipperInfo.style.justifyContent = 'space-between';
-    snipperInfo.style.padding = '5px';
-    snipperInfo.style.fontSize = '10px';
-    snipperInfo.style.width = '78px';
-    snipperInfo.style.height = '34px';
-    snipperInfo.style.backgroundColor = '#474f59';
-    snipperInfo.style.color = '#FFF';
-    snipperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-    snipperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+    snapperInfo = document.createElement('div');
+    snapperInfo.style.position = 'absolute';
+    snapperInfo.style.boxSizing = 'border-box';
+    snapperInfo.style.display = 'flex';
+    snapperInfo.style.flexDirection = 'column';
+    snapperInfo.style.justifyContent = 'space-between';
+    snapperInfo.style.padding = '5px';
+    snapperInfo.style.fontSize = '10px';
+    snapperInfo.style.width = '78px';
+    snapperInfo.style.height = '34px';
+    snapperInfo.style.backgroundColor = '#474f59';
+    snapperInfo.style.color = '#FFF';
+    snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+    snapperInfo.style.left = count * boxSize / 2 + 15 + 'px';
 
     const infoTitle = document.createElement('p');
     infoTitle.style.padding = '0px';
     infoTitle.style.margin = '0px';
     infoTitle.textContent = 'Display Hex';
-    snipperInfo.appendChild(infoTitle);
+    snapperInfo.appendChild(infoTitle);
 
     infoValue = document.createElement('p');
     infoValue.style.padding = '0px';
     infoValue.style.margin = '0px';
     infoValue.id = 'color-info-value';
-    snipperInfo.appendChild(infoValue);
+    snapperInfo.appendChild(infoValue);
 
-    snipperContainer.appendChild(snipperElement);
-    snipperContainer.appendChild(snipperInfo);
-    document.body.appendChild(snipperContainer);
+    snapperContainer.appendChild(snapperElement);
+    // snapperContainer.appendChild(snapperGrid);
+    snapperContainer.appendChild(snapperInfo);
+    document.body.appendChild(snapperContainer);
   }
 
-  function createSnipperColorBoxes() {
-    snipperElement.innerHTML = '';
+  function createSnapperColorBoxes() {
+    snapperElement.innerHTML = '';
 
-    // Create the color boxes inside the snipper.
+    // Create the color boxes inside the snapper.
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < count * count; i++) {
       const colorBox = document.createElement('div');
       colorBox.id = 'color-box-' + i;
       colorBox.style.width = boxSize + 'px';
       colorBox.style.height = boxSize + 'px';
-      colorBox.style.boxSizing = 'border-box';
+      colorBox.style.boxSizing = 'content-box';
       colorBox.style.backgroundColor = 'red';
+      colorBox.style.border = '0px solid #666';
 
       if (i === parseInt((count * count) / 2)) {
-        colorBox.style.border = '1px solid #FFF';
+        colorBox.style.border = '0px solid #FFF';
       }
       fragment.appendChild(colorBox);
     }
-    snipperElement.appendChild(fragment);
+    snapperElement.appendChild(fragment);
   }
 
   /**
    * 
    */
-  function removeSnipper() {
-    if (snipperContainer) {
-      snipperContainer.remove();
+  function removeSnapper() {
+    if (snapperContainer) {
+      snapperContainer.remove();
     }
-    snipperContainer = null;
-    snipperElement = null;
+    snapperContainer = null;
+    snapperElement = null;
     infoValue = null;
   }
 
@@ -165,10 +188,10 @@
       //var croppedUri = canvas.toDataURL('image/png');
       // You could deal with croppedUri as cropped image src.
 
-      removeSnipper();
-      createSnipper();
+      removeSnapper();
+      createSnapper();
 
-      // Now it's ready to pick color using snipper.
+      // Now it's ready to pick color using snapper.
       document.removeEventListener('mousemove', handleMouseMove, false);
       document.addEventListener('mousemove', handleMouseMove, false);
 
@@ -190,10 +213,10 @@
     centerX = event.clientX;
     centerY = event.clientY;
 
-    updateSnipper(centerX, centerY);
+    updateSnapper(centerX, centerY);
   }
 
-  function updateSnipper(centerX, centerY) {
+  function updateSnapper(centerX, centerY) {
     if (!imageData) {
       return;
     }
@@ -208,9 +231,9 @@
     // Output
     //console.log('pix x ' + x +' y '+y+ ' index '+index +' COLOR '+red+','+green+','+blue+','+alpha);
 
-    snipperContainer.style.display = '';
-    snipperContainer.style.left = centerX - (count * boxSize / 2) + 'px';
-    snipperContainer.style.top = centerY - (count * boxSize / 2) + 'px';
+    snapperContainer.style.display = '';
+    snapperContainer.style.left = centerX - (count * boxSize / 2) + 'px';
+    snapperContainer.style.top = centerY - (count * boxSize / 2) + 'px';
 
     const startX = centerX - parseInt(count / 2);
     const startY = centerY - parseInt(count / 2);
@@ -219,7 +242,7 @@
       const y = startY + parseInt(i / count);
       //console.log(x, y);
 
-      const colorBox = snipperElement.querySelector('#color-box-' + i);
+      const colorBox = snapperElement.querySelector('#color-box-' + i);
       
       const index = (y * imageData.width + x) * 4;
       //console.log(index);
@@ -285,39 +308,51 @@
 
     boxSize--;
 
-    snipperContainer.style.width = boxSize * count + 'px';
-    snipperContainer.style.height = boxSize * count + 'px';
+    snapperContainer.style.width = boxSize * count + 'px';
+    snapperContainer.style.height = boxSize * count + 'px';
 
-    snipperElement.style.width = boxSize * count + 'px';
-    snipperElement.style.height = boxSize * count + 'px';
+    snapperElement.style.width = boxSize * count + 'px';
+    snapperElement.style.height = boxSize * count + 'px';
 
-    snipperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-    snipperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+    snapperGrid.style.width = boxSize * count + 'px';
+    snapperGrid.style.height = boxSize * count + 'px';
+    snapperGrid.style.backgroundImage = 
+      'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
+      'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
-    createSnipperColorBoxes();
+    snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+    snapperInfo.style.left = count * boxSize / 2 + 15 + 'px';
 
-    updateSnipper(centerX, centerY);
+    createSnapperColorBoxes();
+
+    updateSnapper(centerX, centerY);
   }
 
   function enlarge() {
-    if (boxSize >= 10) {
+    if (boxSize >= 15) {
       return;
     }
 
     boxSize++;
 
-    snipperContainer.style.width = boxSize * count + 'px';
-    snipperContainer.style.height = boxSize * count + 'px';
+    snapperContainer.style.width = boxSize * count + 'px';
+    snapperContainer.style.height = boxSize * count + 'px';
 
-    snipperElement.style.width = boxSize * count + 'px';
-    snipperElement.style.height = boxSize * count + 'px';
+    snapperElement.style.width = boxSize * count + 'px';
+    snapperElement.style.height = boxSize * count + 'px';
 
-    snipperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-    snipperInfo.style.left = count * boxSize / 2 + 15 + 'px';
+    snapperGrid.style.width = boxSize * count + 'px';
+    snapperGrid.style.height = boxSize * count + 'px';
+    snapperGrid.style.backgroundImage = 
+      'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
+      'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
-    createSnipperColorBoxes();
+    snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+    snapperInfo.style.left = count * boxSize / 2 + 15 + 'px';
 
-    updateSnipper(centerX, centerY);
+    createSnapperColorBoxes();
+
+    updateSnapper(centerX, centerY);
   }
 
   function showNotification(red, green, blue, alpha) {
@@ -353,9 +388,9 @@
 
   function quit() {
     imageData = null;
-    removeSnipper();
+    removeSnapper();
 
-    document.removeEventListener('mousemove', updateSnipper);
+    document.removeEventListener('mousemove', updateSnapper);
     document.removeEventListener('keydown', handleKeydown);
   }
 
@@ -389,7 +424,7 @@
           const hex = RGBToHex(red, green, blue);
 
           navigator.clipboard.writeText(hex).then(() => {
-            blink(snipperElement, () => {
+            blink(snapperElement, () => {
               showNotification(red, green, blue, alpha);
               quit();
             });

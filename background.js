@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.cmd === 'capture') {
-      chrome.tabs.captureVisibleTab(null, {}, function(dataUri) {
+      chrome.tabs.captureVisibleTab(null, {format: 'png'}, function(dataUri) {
         sendResponse({dataUri});
       });
     }
