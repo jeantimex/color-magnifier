@@ -19,10 +19,10 @@ const count = 25;
 
 // Caches the screenshot image data.
 let imageData = null;
-let snapperContainer = null;
-let snapperElement = null;
-let snapperGrid = null;
-let snapperInfo = null;
+let magnifierContainer = null;
+let magnifierElement = null;
+let magnifierGrid = null;
+let magnifierInfo = null;
 let infoTitle = null;
 let infoValue = null;
 let notification = null;
@@ -64,67 +64,67 @@ function createNotification() {
   document.body.appendChild(notification);
 }
 
-function createSnapper() {
+function createMagnifier() {
   // Create the container.
-  snapperContainer = document.createElement('div');
-  snapperContainer.style.position = 'absolute';
-  snapperContainer.style.display = 'none';
-  snapperContainer.style.zIndex = 999999;
-  snapperContainer.style.width = boxSize * count + 'px';
-  snapperContainer.style.height = boxSize * count + 'px';
+  magnifierContainer = document.createElement('div');
+  magnifierContainer.style.position = 'absolute';
+  magnifierContainer.style.display = 'none';
+  magnifierContainer.style.zIndex = 999999;
+  magnifierContainer.style.width = boxSize * count + 'px';
+  magnifierContainer.style.height = boxSize * count + 'px';
 
-  // Create the snapper.
-  snapperElement = document.createElement('div');
-  snapperElement.id = 'com.jeantimex.crx.color.snapper';
-  snapperElement.style.position = 'absolute';
-  snapperElement.style.borderRadius = '50%';
-  snapperElement.style.border = 'solid #666 0px';
-  snapperElement.style.overflow = 'hidden';
-  snapperElement.style.backgroundColor = '#999';
-  snapperElement.style.cursor = 'none';
-  snapperElement.style.borderStyle = 'solid';
-  snapperElement.style.borderWidth = containerBorder + 'px';
-  snapperElement.style.boxSizing = 'content-box';
-  snapperElement.style.borderColor = 'rgba(0, 0, 0, 0.2)';
-  snapperElement.style.backgroundClip = 'content-box';
-  snapperElement.style.margin = '0px';
-  snapperElement.style.padding = '0px';
-  snapperElement.style.opacity = '1';
+  // Create the magnifier.
+  magnifierElement = document.createElement('div');
+  magnifierElement.id = 'com.jeantimex.crx.color.magnifier';
+  magnifierElement.style.position = 'absolute';
+  magnifierElement.style.borderRadius = '50%';
+  magnifierElement.style.border = 'solid #666 0px';
+  magnifierElement.style.overflow = 'hidden';
+  magnifierElement.style.backgroundColor = '#999';
+  magnifierElement.style.cursor = 'none';
+  magnifierElement.style.borderStyle = 'solid';
+  magnifierElement.style.borderWidth = containerBorder + 'px';
+  magnifierElement.style.boxSizing = 'content-box';
+  magnifierElement.style.borderColor = 'rgba(0, 0, 0, 0.2)';
+  magnifierElement.style.backgroundClip = 'content-box';
+  magnifierElement.style.margin = '0px';
+  magnifierElement.style.padding = '0px';
+  magnifierElement.style.opacity = '1';
 
-  snapperElement.style.width = boxSize * count + 'px';
-  snapperElement.style.height = boxSize * count + 'px';
-  createSnapperColorBoxes();
+  magnifierElement.style.width = boxSize * count + 'px';
+  magnifierElement.style.height = boxSize * count + 'px';
+  createMagnifierColorBoxes();
 
-  // Snapper grid
-  snapperGrid = document.createElement('div');
-  snapperGrid.style.position = 'absolute';
-  snapperGrid.style.width = boxSize * count + 'px';
-  snapperGrid.style.height = boxSize * count + 'px';
-  snapperGrid.style.cursor = 'none';
-  snapperGrid.style.borderRadius = '50%';
-  snapperGrid.style.border = 'solid #666 2px';
-  snapperGrid.style.boxSizing = 'border-box';
-  snapperGrid.style.backgroundColor = 'transparent';
-  snapperGrid.style.backgroundPosition = '0,0,0,0';
-  snapperGrid.style.backgroundImage = 
+  // Magnifier grid
+  magnifierGrid = document.createElement('div');
+  magnifierGrid.style.position = 'absolute';
+  magnifierGrid.style.width = boxSize * count + 'px';
+  magnifierGrid.style.height = boxSize * count + 'px';
+  magnifierGrid.style.cursor = 'none';
+  magnifierGrid.style.borderRadius = '50%';
+  magnifierGrid.style.border = 'solid #666 2px';
+  magnifierGrid.style.boxSizing = 'border-box';
+  magnifierGrid.style.backgroundColor = 'transparent';
+  magnifierGrid.style.backgroundPosition = '0,0,0,0';
+  magnifierGrid.style.backgroundImage = 
     'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
     'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
   // info
-  snapperInfo = document.createElement('div');
-  snapperInfo.style.position = 'absolute';
-  snapperInfo.style.boxSizing = 'border-box';
-  snapperInfo.style.display = 'flex';
-  snapperInfo.style.flexDirection = 'column';
-  snapperInfo.style.justifyContent = 'space-between';
-  snapperInfo.style.padding = '5px';
-  snapperInfo.style.fontSize = '10px';
-  snapperInfo.style.width = '78px';
-  snapperInfo.style.height = '36px';
-  snapperInfo.style.backgroundColor = '#474f59';
-  snapperInfo.style.top = (count * boxSize + 2 * containerBorder - 36) / 2 + 'px';
-  snapperInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
-  snapperInfo.style.boxShadow = '0 0 3px 1px #666';
+  magnifierInfo = document.createElement('div');
+  magnifierInfo.style.position = 'absolute';
+  magnifierInfo.style.boxSizing = 'border-box';
+  magnifierInfo.style.display = 'flex';
+  magnifierInfo.style.flexDirection = 'column';
+  magnifierInfo.style.justifyContent = 'space-between';
+  magnifierInfo.style.padding = '5px';
+  magnifierInfo.style.fontSize = '10px';
+  magnifierInfo.style.width = '78px';
+  magnifierInfo.style.height = '36px';
+  magnifierInfo.style.backgroundColor = '#474f59';
+  magnifierInfo.style.top = (count * boxSize + 2 * containerBorder - 36) / 2 + 'px';
+  magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  magnifierInfo.style.boxShadow = '0 0 3px 1px #666';
 
   infoTitle = document.createElement('p');
   infoTitle.style.padding = '0px';
@@ -133,7 +133,7 @@ function createSnapper() {
   infoTitle.style.fontSize = '11px';
   infoTitle.style.lineHeight = '12px';
   infoTitle.style.fontFamily = 'OpenSans';
-  snapperInfo.appendChild(infoTitle);
+  magnifierInfo.appendChild(infoTitle);
 
   infoValue = document.createElement('p');
   infoValue.style.padding = '0px';
@@ -142,18 +142,18 @@ function createSnapper() {
   infoValue.style.fontSize = '11px';
   infoValue.style.lineHeight = '12px';
   infoValue.style.fontFamily = 'OpenSans';
-  snapperInfo.appendChild(infoValue);
+  magnifierInfo.appendChild(infoValue);
 
-  snapperContainer.appendChild(snapperElement);
-  // snapperContainer.appendChild(snapperGrid);
-  snapperContainer.appendChild(snapperInfo);
-  document.body.appendChild(snapperContainer);
+  magnifierContainer.appendChild(magnifierElement);
+  // magnifierContainer.appendChild(magnifierGrid);
+  magnifierContainer.appendChild(magnifierInfo);
+  document.body.appendChild(magnifierContainer);
 }
 
-function createSnapperColorBoxes() {
-  snapperElement.innerHTML = '';
+function createMagnifierColorBoxes() {
+  magnifierElement.innerHTML = '';
 
-  // Create the color boxes inside the snapper.
+  // Create the color boxes inside the magnifier.
   const fragment = document.createDocumentFragment();
   for (let i = 0; i < count * count; i++) {
     const colorBox = document.createElement('div');
@@ -177,18 +177,18 @@ function createSnapperColorBoxes() {
     }
     fragment.appendChild(colorBox);
   }
-  snapperElement.appendChild(fragment);
+  magnifierElement.appendChild(fragment);
 }
 
 /**
  * 
  */
-function removeSnapper() {
-  if (snapperContainer) {
-    snapperContainer.remove();
+function removeMagnifier() {
+  if (magnifierContainer) {
+    magnifierContainer.remove();
   }
-  snapperContainer = null;
-  snapperElement = null;
+  magnifierContainer = null;
+  magnifierElement = null;
   infoValue = null;
 }
 
@@ -219,10 +219,10 @@ function updateImageData(dataUri) {
     //var croppedUri = canvas.toDataURL('image/png');
     // You could deal with croppedUri as cropped image src.
 
-    removeSnapper();
-    createSnapper();
+    removeMagnifier();
+    createMagnifier();
 
-    // Now it's ready to pick color using snapper.
+    // Now it's ready to pick color using magnifier.
     document.removeEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousemove', handleMouseMove, false);
 
@@ -244,10 +244,10 @@ function handleMouseMove(event) {
   centerX = event.clientX;
   centerY = event.clientY;
 
-  updateSnapper(centerX, centerY);
+  updateMagnifier(centerX, centerY);
 }
 
-function updateSnapper(centerX, centerY) {
+function updateMagnifier(centerX, centerY) {
   if (!imageData) {
     return;
   }
@@ -262,9 +262,9 @@ function updateSnapper(centerX, centerY) {
   // Output
   //console.log('pix x ' + x +' y '+y+ ' index '+index +' COLOR '+red+','+green+','+blue+','+alpha);
 
-  snapperContainer.style.display = '';
-  snapperContainer.style.left = centerX - (containerBorder + count * boxSize / 2) + 'px';
-  snapperContainer.style.top = centerY - (containerBorder + count * boxSize / 2) + 'px';
+  magnifierContainer.style.display = '';
+  magnifierContainer.style.left = centerX - (containerBorder + count * boxSize / 2) + 'px';
+  magnifierContainer.style.top = centerY - (containerBorder + count * boxSize / 2) + 'px';
 
   const startX = centerX - parseInt(count / 2);
   const startY = centerY - parseInt(count / 2);
@@ -273,7 +273,7 @@ function updateSnapper(centerX, centerY) {
     const y = startY + parseInt(i / count);
     //console.log(x, y);
 
-    const colorBox = snapperElement.querySelector('#color-box-' + i);
+    const colorBox = magnifierElement.querySelector('#color-box-' + i);
     
     const index = (y * imageData.width + x) * 4;
     //console.log(index);
@@ -320,7 +320,7 @@ function updateSnapper(centerX, centerY) {
         b = '0' + b;
       }
 
-      snapperInfo.style.backgroundColor = hex;
+      magnifierInfo.style.backgroundColor = hex;
       infoValue.textContent = r + ' ' + g + ' ' + b;
     }
   }
@@ -346,24 +346,24 @@ function shrink() {
 
   boxSize--;
 
-  snapperContainer.style.width = boxSize * count + 'px';
-  snapperContainer.style.height = boxSize * count + 'px';
+  magnifierContainer.style.width = boxSize * count + 'px';
+  magnifierContainer.style.height = boxSize * count + 'px';
 
-  snapperElement.style.width = boxSize * count + 'px';
-  snapperElement.style.height = boxSize * count + 'px';
+  magnifierElement.style.width = boxSize * count + 'px';
+  magnifierElement.style.height = boxSize * count + 'px';
 
-  snapperGrid.style.width = boxSize * count + 'px';
-  snapperGrid.style.height = boxSize * count + 'px';
-  snapperGrid.style.backgroundImage = 
+  magnifierGrid.style.width = boxSize * count + 'px';
+  magnifierGrid.style.height = boxSize * count + 'px';
+  magnifierGrid.style.backgroundImage = 
     'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
     'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
-  snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-  snapperInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  magnifierInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+  magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
 
-  createSnapperColorBoxes();
+  createMagnifierColorBoxes();
 
-  updateSnapper(centerX, centerY);
+  updateMagnifier(centerX, centerY);
 }
 
 function enlarge() {
@@ -373,24 +373,24 @@ function enlarge() {
 
   boxSize++;
 
-  snapperContainer.style.width = boxSize * count + 'px';
-  snapperContainer.style.height = boxSize * count + 'px';
+  magnifierContainer.style.width = boxSize * count + 'px';
+  magnifierContainer.style.height = boxSize * count + 'px';
 
-  snapperElement.style.width = boxSize * count + 'px';
-  snapperElement.style.height = boxSize * count + 'px';
+  magnifierElement.style.width = boxSize * count + 'px';
+  magnifierElement.style.height = boxSize * count + 'px';
 
-  snapperGrid.style.width = boxSize * count + 'px';
-  snapperGrid.style.height = boxSize * count + 'px';
-  snapperGrid.style.backgroundImage = 
+  magnifierGrid.style.width = boxSize * count + 'px';
+  magnifierGrid.style.height = boxSize * count + 'px';
+  magnifierGrid.style.backgroundImage = 
     'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
     'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
-  snapperInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-  snapperInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  magnifierInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+  magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
 
-  createSnapperColorBoxes();
+  createMagnifierColorBoxes();
 
-  updateSnapper(centerX, centerY);
+  updateMagnifier(centerX, centerY);
 }
 
 function showNotification(red, green, blue, alpha) {
@@ -426,9 +426,9 @@ function showNotification(red, green, blue, alpha) {
 
 function quit() {
   imageData = null;
-  removeSnapper();
+  removeMagnifier();
 
-  document.removeEventListener('mousemove', updateSnapper);
+  document.removeEventListener('mousemove', updateMagnifier);
   document.removeEventListener('keydown', handleKeydown);
 }
 
@@ -462,7 +462,7 @@ function saveData(event) {
         const hex = RGBToHex(red, green, blue);
 
         navigator.clipboard.writeText(hex).then(() => {
-          blink(snapperElement, () => {
+          blink(magnifierElement, () => {
             showNotification(red, green, blue, alpha);
             quit();
           });
