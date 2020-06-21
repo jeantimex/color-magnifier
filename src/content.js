@@ -16,6 +16,8 @@ openSansFont.load()
 const gridColor = '#EEE';
 const containerBorder = 6;
 const count = 25;
+const magnifierInfoWidth = 78;
+let flipMagnifierInfo = false;
 
 // Caches the screenshot image data.
 let imageData = null;
@@ -75,7 +77,6 @@ function createMagnifier() {
 
   // Create the magnifier.
   magnifierElement = document.createElement('div');
-  magnifierElement.id = 'com.jeantimex.crx.color.magnifier';
   magnifierElement.style.position = 'absolute';
   magnifierElement.style.borderRadius = '50%';
   magnifierElement.style.border = 'solid #666 0px';
@@ -119,7 +120,7 @@ function createMagnifier() {
   magnifierInfo.style.justifyContent = 'space-between';
   magnifierInfo.style.padding = '5px';
   magnifierInfo.style.fontSize = '10px';
-  magnifierInfo.style.width = '78px';
+  magnifierInfo.style.width = magnifierInfoWidth + 'px';
   magnifierInfo.style.height = '36px';
   magnifierInfo.style.backgroundColor = '#474f59';
   magnifierInfo.style.top = (count * boxSize + 2 * containerBorder - 36) / 2 + 'px';
@@ -266,6 +267,14 @@ function updateMagnifier(centerX, centerY) {
   magnifierContainer.style.left = centerX - (containerBorder + count * boxSize / 2) + 'px';
   magnifierContainer.style.top = centerY - (containerBorder + count * boxSize / 2) + 'px';
 
+  flipMagnifierInfo = parseInt(magnifierContainer.style.left) + ((count + 1) / 2 * boxSize + 20) + magnifierInfoWidth + 10 > window.innerWidth;
+
+  if (flipMagnifierInfo) {
+    magnifierInfo.style.left = (count + 1) / 2 * boxSize - magnifierInfoWidth - containerBorder + 'px';
+  } else {
+    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  }
+
   const startX = centerX - parseInt(count / 2);
   const startY = centerY - parseInt(count / 2);
   for (let i = 0; i < count * count; i++) {
@@ -359,7 +368,11 @@ function shrink() {
     'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
   magnifierInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-  magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  if (flipMagnifierInfo) {
+    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 'px';
+  } else {
+    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  }
 
   createMagnifierColorBoxes();
 
@@ -386,7 +399,11 @@ function enlarge() {
     'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
   magnifierInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
-  magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  if (flipMagnifierInfo) {
+    magnifierInfo.style.left = (count + 1) / 2 * boxSize - magnifierInfoWidth - containerBorder + 'px';
+  } else {
+    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+  }
 
   createMagnifierColorBoxes();
 

@@ -4,8 +4,8 @@
   "description": "A Chrome extension for picking color on web page",
   "main": "background.js",
   "scripts": {
-    "clean": "rimraf dist",
-    "build": "npm run clean && webpack --env production"
+    "build": "webpack --env production",
+    "dev": "webpack --env development --watch"
   },
   "repository": {
     "type": "git",

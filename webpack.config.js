@@ -19,24 +19,6 @@ const commonConfig = merge([
   parts.loadJavaScript({
     include: path.resolve(__dirname, 'src'),
   }),
-]);
-
-const productionConfig = merge([
-  {
-    // performance
-  },
-  parts.clean(),
-  parts.minifyJavaScript(),
-  parts.minifyCSS({
-    options: {
-      discardComments: {
-        removeAll: true,
-      },
-      // Run cssnano in safe mode to avoid
-      // potentially unsafe transformations.
-      safe: true,
-    },
-  }),
   parts.extractCSS({
     use: ['css-loader', 'sass-loader', parts.autoprefix()],
   }),
@@ -64,9 +46,27 @@ const productionConfig = merge([
   }),
 ]);
 
+const productionConfig = merge([
+  {
+    // performance
+  },
+  parts.clean(),
+  parts.minifyJavaScript(),
+  parts.minifyCSS({
+    options: {
+      discardComments: {
+        removeAll: true,
+      },
+      // Run cssnano in safe mode to avoid
+      // potentially unsafe transformations.
+      safe: true,
+    },
+  }),
+]);
+
 const developmentConfig = merge([
   {
-
+    devtool: 'inline-source-map',
   },
 ]);
 
