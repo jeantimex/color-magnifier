@@ -16,7 +16,9 @@ openSansFont.load()
 const gridColor = '#EEE';
 const containerBorder = 6;
 const count = 25;
-const magnifierInfoWidth = 78;
+const magnifierInfoWidth = 80;
+const magnifierInfoHeight = 36;
+
 let flipMagnifierInfo = false;
 
 // Caches the screenshot image data.
@@ -121,9 +123,9 @@ function createMagnifier() {
   magnifierInfo.style.padding = '5px';
   magnifierInfo.style.fontSize = '10px';
   magnifierInfo.style.width = magnifierInfoWidth + 'px';
-  magnifierInfo.style.height = '36px';
+  magnifierInfo.style.height = magnifierInfoHeight + 'px';
   magnifierInfo.style.backgroundColor = '#474f59';
-  magnifierInfo.style.top = (count * boxSize + 2 * containerBorder - 36) / 2 + 'px';
+  magnifierInfo.style.top = (count * boxSize + 2 * containerBorder - magnifierInfoHeight) / 2 + 'px';
   magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
   magnifierInfo.style.boxShadow = '0 0 3px 1px #666';
 
@@ -270,9 +272,9 @@ function updateMagnifier(centerX, centerY) {
   flipMagnifierInfo = parseInt(magnifierContainer.style.left) + ((count + 1) / 2 * boxSize + 20) + magnifierInfoWidth + 10 > window.innerWidth;
 
   if (flipMagnifierInfo) {
-    magnifierInfo.style.left = (count + 1) / 2 * boxSize - magnifierInfoWidth - containerBorder + 'px';
+    magnifierInfo.style.left = containerBorder + parseInt(count / 2) * boxSize - 20 - magnifierInfoWidth + 'px';
   } else {
-    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+    magnifierInfo.style.left = containerBorder + (parseInt(count / 2) + 1) * boxSize + 20 + 'px';
   }
 
   const startX = centerX - parseInt(count / 2);
@@ -367,11 +369,11 @@ function shrink() {
     'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
     'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
-  magnifierInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+  magnifierInfo.style.top = (count * boxSize + 2 * containerBorder - magnifierInfoHeight) / 2 + 'px';
   if (flipMagnifierInfo) {
-    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 'px';
+    magnifierInfo.style.left = containerBorder + parseInt(count / 2) * boxSize - 20 - magnifierInfoWidth + 'px';
   } else {
-    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+    magnifierInfo.style.left = containerBorder + (parseInt(count / 2) + 1) * boxSize + 20 + 'px';
   }
 
   createMagnifierColorBoxes();
@@ -398,11 +400,11 @@ function enlarge() {
     'repeating-linear-gradient(to right, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px),' +
     'repeating-linear-gradient(to bottom, ' + gridColor + ' 0, ' + gridColor + ' 1px, transparent 1px, transparent ' + boxSize + 'px)';
 
-  magnifierInfo.style.top = (count * boxSize + 4 - 34) / 2 + 'px';
+  magnifierInfo.style.top = (count * boxSize + 2 * containerBorder - magnifierInfoHeight) / 2 + 'px';
   if (flipMagnifierInfo) {
     magnifierInfo.style.left = (count + 1) / 2 * boxSize - magnifierInfoWidth - containerBorder + 'px';
   } else {
-    magnifierInfo.style.left = (count + 1) / 2 * boxSize + 20 + 'px';
+    magnifierInfo.style.left = containerBorder + (parseInt(count / 2) + 1) * boxSize + 20 + 'px';
   }
 
   createMagnifierColorBoxes();
