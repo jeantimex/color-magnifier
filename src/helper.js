@@ -83,3 +83,10 @@ function blink(element, callback) {
     }
   }, 200);
 }
+
+export {
+  RGBToHex,
+  RGBAToHexA,
+  lightOrDark,
+  blink,
+};
