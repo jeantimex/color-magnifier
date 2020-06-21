@@ -11,12 +11,12 @@
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "background.bundle.js"
     ],
     "persistent": false
   },
   "browser_action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "popup.html",
     "default_title": "Color Snapper"
   },
   "options_page": "",
@@ -26,8 +26,7 @@
         "<all_urls>"
       ],
       "js": [
-        "helper.js",
-        "content/content.js"
+        "content.bundle.js"
       ]
     }
   ]
