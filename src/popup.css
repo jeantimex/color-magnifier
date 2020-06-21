@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "OpenSans";
+  src: url("./fonts/OpenSans-Regular.ttf") format("truetype");
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,6 +12,7 @@
 body {
   width: 225px;
   font-size: 14px;
+  font-family: "OpenSans";
 }
 
 ul, li {

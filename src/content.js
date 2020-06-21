@@ -1,5 +1,18 @@
 import {RGBToHex, lightOrDark, blink} from './helper';
 
+const fontsPath = chrome.extension.getURL('fonts');
+
+const openSansFont = new FontFace('OpenSans', 'url(' + fontsPath + '/OpenSans-Regular.ttf)');
+openSansFont.load()
+  .then((fontFace) => {
+    document.fonts.add(fontFace);
+    document.body.style.fontFamily = '"OpenSans", Arial';
+  })
+  .catch((error) => {
+    // error occurred
+    console.error(error);
+  });
+
 const gridColor = '#EEE';
 const containerBorder = 6;
 const count = 25;
@@ -36,6 +49,8 @@ function createNotification() {
   notification.style.boxShadow = '0px 0px 1px 1px #999';
   notification.style.transition = 'opacity 0.2s, top 0.2s';
   notification.style.backgroundColor = '#FFF';
+  notification.style.fontFamily = 'OpenSans';
+  notification.style.fontSize = '12px';
 
   const colorBlock = document.createElement('div');
   colorBlock.style.width = '13px';
@@ -117,6 +132,7 @@ function createSnapper() {
   infoTitle.textContent = 'Display Hex';
   infoTitle.style.fontSize = '11px';
   infoTitle.style.lineHeight = '12px';
+  infoTitle.style.fontFamily = 'OpenSans';
   snapperInfo.appendChild(infoTitle);
 
   infoValue = document.createElement('p');
@@ -125,6 +141,7 @@ function createSnapper() {
   infoValue.id = 'color-info-value';
   infoValue.style.fontSize = '11px';
   infoValue.style.lineHeight = '12px';
+  infoValue.style.fontFamily = 'OpenSans';
   snapperInfo.appendChild(infoValue);
 
   snapperContainer.appendChild(snapperElement);

@@ -26,6 +26,17 @@ const productionConfig = merge([
     // performance
   },
   parts.clean(),
+  parts.minifyJavaScript(),
+  parts.minifyCSS({
+    options: {
+      discardComments: {
+        removeAll: true,
+      },
+      // Run cssnano in safe mode to avoid
+      // potentially unsafe transformations.
+      safe: true,
+    },
+  }),
   parts.extractCSS({
     use: ['css-loader', 'sass-loader', parts.autoprefix()],
   }),
@@ -33,6 +44,17 @@ const productionConfig = merge([
     chunks: ['popup'],
     filename: 'popup.html',
     template: './src/popup.html',
+  }),
+  parts.loadImages({
+    options: {
+      limit: 8192,
+      name: './images/[name].[ext]',
+    },
+  }),
+  parts.loadFonts({
+    options: {
+      name: './fonts/[name].[ext]',
+    },
   }),
   parts.copy({
     patterns: [

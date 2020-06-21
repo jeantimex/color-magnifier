@@ -29,5 +29,8 @@
         "content.bundle.js"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "fonts/*"
   ]
 }
