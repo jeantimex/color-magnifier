@@ -1,7 +1,7 @@
 {
-  "name": "Color Snapper",
-  "description": "Color Snapper",
-  "version": "1.0",
+  "name": "Color Magnifier",
+  "description": "Color Magnifier",
+  "version": "0.0.1",
   "author": "Yong Su",
   "manifest_version": 2,
   "permissions": [
@@ -17,7 +17,7 @@
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "Color Snapper"
+    "default_title": "Color Magnifier"
   },
   "options_page": "",
   "content_scripts": [

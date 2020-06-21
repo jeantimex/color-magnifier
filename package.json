@@ -1,6 +1,6 @@
 {
-  "name": "color-snapper",
-  "version": "1.0.0",
+  "name": "color-magnifier",
+  "version": "0.0.1",
   "description": "A Chrome extension for picking color on web page",
   "main": "background.js",
   "scripts": {
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeantimex/color-snapper.git"
+    "url": "git+https://github.com/jeantimex/color-magnifier.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jeantimex/color-snapper/issues"
+    "url": "https://github.com/jeantimex/color-magnifier/issues"
   },
-  "homepage": "https://github.com/jeantimex/color-snapper#readme",
+  "homepage": "https://github.com/jeantimex/color-magnifier#readme",
   "devDependencies": {
     "@babel/cli": "^7.10.3",
     "@babel/core": "^7.10.3",
