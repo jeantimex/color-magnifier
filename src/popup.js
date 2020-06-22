@@ -1,5 +1,12 @@
 import "regenerator-runtime/runtime";
-import { RGBToHex, formatColor, getCurrentTab, getColorObject } from "./helper";
+import {
+  allColorFormats,
+  formatColor,
+  getCurrentTab,
+  getColorObject,
+  getStorageData,
+  setStorageData,
+} from "./helper";
 
 import "./popup.css";
 
@@ -12,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const pickedColorsList = document.querySelector("#picked-colors-list");
     savedColors.reverse().forEach((savedColor) => {
       const li = document.createElement("li");
+      li.classList.add('color-list-item');
       li.dataset.savedColor = savedColor;
 
       const div = document.createElement("div");
@@ -60,5 +68,26 @@ document.addEventListener("DOMContentLoaded", function () {
         window.close(); // Close the popup
       });
     });
+  });
+
+  document.addEventListener("keydown", async function (event) {
+    if (event.key === "\\") {
+      const currentColorFormat = await getStorageData("colorFormat");
+      const nextColorFormat = (currentColorFormat + 1) % allColorFormats.length;
+      try {
+        await setStorageData({ colorFormat: nextColorFormat });
+
+        const colorListItems = document.querySelectorAll("#picked-colors-list .color-list-item");
+        for (const li of colorListItems) {
+          const span = li.querySelector('.color-value');
+          span.textContent = formatColor({
+            ...getColorObject(li.dataset.savedColor),
+            format: nextColorFormat,
+          });;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
   });
 });
