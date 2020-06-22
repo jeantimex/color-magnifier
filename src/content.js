@@ -605,8 +605,7 @@ import {
       updateImageData(request.dataUri);
       window.addEventListener("resize", quit);
     } else if (request.cmd === "copy") {
-      const [red, green, blue, alpha] = request.savedColor.split(",");
-      await copyColor({red, green, blue, alpha});
+      await copyColor(request.color);
     } else if (request.cmd === "quit") {
       window.removeEventListener("resize", quit);
       quit();

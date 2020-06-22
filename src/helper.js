@@ -1,3 +1,5 @@
+import "regenerator-runtime/runtime";
+
 const COLOR_FORMAT_RGB = 0;
 const COLOR_FORMAT_RGB_HEX = 1;
 
@@ -144,6 +146,25 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function getCurrentTab() {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+      } else if (tabs && tabs[0]) {
+        resolve(tabs[0]);
+      } else {
+        reject(new Error('Cannot get current tab'));
+      }
+    });
+  });
+}
+
+function getColorObject(colorString) {
+  const [red, green, blue, alpha] = colorString.split(",");
+  return {red, green, blue, alpha};
+}
+
 export {
   RGBToHex,
   RGBAToHexA,
@@ -155,4 +176,6 @@ export {
   formatColor,
   allColorFormats,
   delay,
+  getColorObject,
+  getCurrentTab,
 };
