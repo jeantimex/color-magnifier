@@ -6,6 +6,8 @@ import {
   getColorObject,
   getStorageData,
   setStorageData,
+  lightOrDark,
+  RGBToHex,
 } from "./helper";
 
 import "./popup.css";
@@ -18,19 +20,28 @@ document.addEventListener("DOMContentLoaded", function () {
   }) {
     const pickedColorsList = document.querySelector("#picked-colors-list");
     savedColors.reverse().forEach((savedColor) => {
+      const {red, green, blue, alpha} = getColorObject(savedColor);
+      const hex = '#' + RGBToHex(red, green, blue, alpha);
+
       const li = document.createElement("li");
       li.classList.add('color-list-item');
       li.dataset.savedColor = savedColor;
 
       const div = document.createElement("div");
       div.classList.add("color-block");
-      div.style.backgroundColor = `rgba(${savedColor})`;
+      div.style.borderWidth = '1px';
+      div.style.borderStyle = 'solid';
+      div.style.borderColor = lightOrDark(hex) === 'light' ? '#666': '#FFF';
+      div.style.backgroundColor = hex;
       li.appendChild(div);
 
       const span = document.createElement("span");
       span.classList.add("color-value");
       span.textContent = formatColor({
-        ...getColorObject(savedColor),
+        red,
+        green,
+        blue,
+        alpha,
         format: colorFormat,
       });
       li.appendChild(span);

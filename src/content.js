@@ -8,7 +8,6 @@ import {
   formatColor,
   getColorFormatName,
   allColorFormats,
-  delay,
 } from "./helper";
 
 (async function () {
@@ -517,7 +516,12 @@ import {
   async function showNotification(color, colorValue) {
     const colorBlock = notification.querySelector("div");
     const {red, green, blue, alpha} = color;
+    const hex = "#" + RGBToHex(red, green, blue, alpha);
+
     colorBlock.style.backgroundColor = `rgba(${red},${green},${blue},${alpha})`;
+    colorBlock.style.borderWidth = '1px';
+    colorBlock.style.borderStyle = 'solid';
+    colorBlock.style.borderColor = lightOrDark(hex) === 'light' ? '#666' : '#FFF';
 
     const p = notification.querySelector("p");
     p.innerHTML =
