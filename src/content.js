@@ -46,6 +46,7 @@ import {
   let infoTitle = null;
   let infoValue = null;
   let notification = null;
+  let notificationTimeout = 0;
 
   let boxSize = 4; // 4px
 
@@ -525,10 +526,11 @@ import {
     notification.style.opacity = "1";
     notification.style.top = "10px";
 
-    await delay(2000);
-
-    notification.style.opacity = "0";
-    notification.style.top = "0px";
+    clearTimeout(notificationTimeout);
+    notificationTimeout = setTimeout(() => {
+      notification.style.opacity = "0";
+      notification.style.top = "0px";
+    }, 2000);
   }
 
   function quit() {
@@ -587,7 +589,9 @@ import {
         const [red, green, blue, alpha] = color.split(",");
 
         blink(magnifierElement, async () => {
-          quit();
+          if (!event.altKey) {
+            quit();
+          }
           await copyColor({red, green, blue, alpha});
         });
       });
