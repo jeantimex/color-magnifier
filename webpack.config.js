@@ -68,6 +68,13 @@ const developmentConfig = merge([
   {
     devtool: 'inline-source-map',
   },
+  parts.reloadExtension({
+    entries: { // The entries used for the content/background scripts or extension pages
+      contentScript: 'content',
+      background: 'background',
+      extensionPage: 'popup',
+    },
+  }),
 ]);
 
 module.exports = (mode) => {

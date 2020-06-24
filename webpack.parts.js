@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyWebpackPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const ExtensionReloader  = require('webpack-extension-reloader');
 const cssnano = require('cssnano');
 
 exports.clean = (path) => ({
@@ -119,6 +120,16 @@ exports.copy = ({ patterns, options }) => ({
     new CopyWebpackPlugin({
       patterns,
       options,
+    }),
+  ],
+});
+
+exports.reloadExtension = ({ port = 9090, reloadPage = true, entries }) => ({
+  plugins: [
+    new ExtensionReloader({
+      port,
+      reloadPage,
+      entries,
     }),
   ],
 });
