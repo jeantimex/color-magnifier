@@ -113,7 +113,8 @@ import {
     magnifierElement.style.borderStyle = "solid";
     magnifierElement.style.borderWidth = containerBorder + "px";
     magnifierElement.style.boxSizing = "content-box";
-    magnifierElement.style.borderColor = "rgba(0, 0, 0, 0.2)";
+    magnifierElement.style.borderColor = "rgba(255, 255, 255, 0.8)";
+    magnifierElement.style.boxShadow = '0 0 4px 2px #999';
     magnifierElement.style.backgroundClip = "content-box";
     magnifierElement.style.margin = "0px";
     magnifierElement.style.padding = "0px";
@@ -396,9 +397,11 @@ import {
         20 -
         magnifierInfoWidth +
         "px";
+      magnifierInfo.style.textAlign = 'right';
     } else {
       magnifierInfo.style.left =
         containerBorder + (parseInt(count / 2) + 1) * boxSize + 20 + "px";
+        magnifierInfo.style.textAlign = 'left';
     }
   }
 
