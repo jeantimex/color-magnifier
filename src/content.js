@@ -281,8 +281,8 @@ import {
     event.stopPropagation();
     event.stopImmediatePropagation();
 
-    centerX = event.clientX;
-    centerY = event.clientY;
+    centerX = event.clientX + window.scrollX;
+    centerY = event.clientY + window.scrollY;
 
     updateMagnifier(centerX, centerY);
     updateMagnifierInfo();
@@ -294,7 +294,7 @@ import {
     }
 
     // locate index of current pixel
-    const centerIdx = (centerY * imageData.width + centerX) * 4;
+    const centerIdx = ((centerY - window.scrollY) * imageData.width + centerX - window.scrollX) * 4;
 
     let red = imageData.data[centerIdx];
     let green = imageData.data[centerIdx + 1];
@@ -324,7 +324,7 @@ import {
 
       const colorBox = magnifierElement.querySelector("#color-box-" + i);
 
-      const index = (y * imageData.width + x) * 4;
+      const index = ((y - window.scrollY) * imageData.width + x - window.scrollX) * 4;
       //console.log(index);
 
       if (index >= 0 && index + 3 < imageData.data.length) {
