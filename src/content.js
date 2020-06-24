@@ -31,7 +31,7 @@ import {
   const gridColor = "#EEE";
   const containerBorder = 6;
   const count = 25;
-  const magnifierInfoWidth = 80;
+  const magnifierInfoWidth = 100;
   const magnifierInfoHeight = 36;
 
   let flipMagnifierInfo = false;
@@ -552,6 +552,7 @@ import {
     const colorValue = formatColor({
       ...color,
       format: colorFormat,
+      display: false,
     });
 
     try {

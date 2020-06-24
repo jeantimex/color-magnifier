@@ -2,8 +2,13 @@ import "regenerator-runtime/runtime";
 
 const COLOR_FORMAT_RGB = 0;
 const COLOR_FORMAT_RGB_HEX = 1;
+const COLOR_FORMAT_HSL = 2;
 
-const allColorFormats = [COLOR_FORMAT_RGB, COLOR_FORMAT_RGB_HEX];
+const allColorFormats = [
+  COLOR_FORMAT_RGB,
+  COLOR_FORMAT_RGB_HEX,
+  COLOR_FORMAT_HSL,
+];
 
 function RGBToHex(r, g, b) {
   r = parseInt(r).toString(16);
@@ -29,6 +34,48 @@ function RGBAToHexA(r, g, b, a) {
   if (a.length == 1) a = "0" + a;
 
   return (r + g + b + a).toUpperCase();
+}
+
+function RGBToHSL(r, g, b) {
+  // Make r, g, and b fractions of 1
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  // Find greatest and smallest channel values
+  let cmin = Math.min(r, g, b),
+    cmax = Math.max(r, g, b),
+    delta = cmax - cmin,
+    h = 0,
+    s = 0,
+    l = 0;
+
+  // Calculate hue
+  // No difference
+  if (delta == 0) h = 0;
+  // Red is max
+  else if (cmax == r) h = ((g - b) / delta) % 6;
+  // Green is max
+  else if (cmax == g) h = (b - r) / delta + 2;
+  // Blue is max
+  else h = (r - g) / delta + 4;
+
+  h = Math.round(h * 60);
+
+  // Make negative hues positive behind 360°
+  if (h < 0) h += 360;
+
+  // Calculate lightness
+  l = (cmax + cmin) / 2;
+
+  // Calculate saturation
+  s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+
+  // Multiply l and s by 100
+  s = +(s * 100).toFixed(1);
+  l = +(l * 100).toFixed(1);
+
+  return h + " " + s + "% " + l + "%";
 }
 
 // https://awik.io/determine-color-bright-dark-using-javascript/
@@ -109,41 +156,58 @@ function setStorageData(data) {
 function getColorFormatName(format) {
   switch (format) {
     case COLOR_FORMAT_RGB:
-      return 'RGB';
+      return "RGB";
     case COLOR_FORMAT_RGB_HEX:
-      return 'Hex';
+      return "Hex";
+    case COLOR_FORMAT_HSL:
+      return "HSL";
     default:
-      return '';
+      return "";
   }
 }
 
-function formatColor({red, green, blue, alpha, format, delimiter = ' '}) {
+function formatColor({ red, green, blue, alpha, format, display = true }) {
   switch (format) {
     case COLOR_FORMAT_RGB:
-      return red + delimiter + green + delimiter + blue;
+      if (display) {
+        return red + " " + green + " " + blue;
+      } else {
+        return "rgb(" + red + ", " + green + ", " + blue + ")";
+      }
     case COLOR_FORMAT_RGB_HEX:
       let r = parseInt(red).toString(16).toUpperCase();
       let g = parseInt(green).toString(16).toUpperCase();
       let b = parseInt(blue).toString(16).toUpperCase();
 
       if (r.length === 1) {
-        r = '0' + r;
+        r = "0" + r;
       }
       if (g.length === 1) {
-        g = '0' + g;
+        g = "0" + g;
       }
       if (b.length === 1) {
-        b = '0' + b;
+        b = "0" + b;
       }
 
-      return r + delimiter + g + delimiter + b;
+      if (display) {
+        return r + " " + g + " " + b;
+      } else {
+        return "#" + r + g + b;
+      }
+    case COLOR_FORMAT_HSL:
+      let value = RGBToHSL(red, green, blue);
+      if (display) {
+        return value;
+      } else {
+        return "hsl(" + value.replace(/\s/g, ", ") + ")";
+      }
     default:
-      return '';
+      return "";
   }
 }
 
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function getCurrentTab() {
@@ -154,7 +218,7 @@ function getCurrentTab() {
       } else if (tabs && tabs[0]) {
         resolve(tabs[0]);
       } else {
-        reject(new Error('Cannot get current tab'));
+        reject(new Error("Cannot get current tab"));
       }
     });
   });
@@ -162,12 +226,13 @@ function getCurrentTab() {
 
 function getColorObject(colorString) {
   const [red, green, blue, alpha] = colorString.split(",");
-  return {red, green, blue, alpha};
+  return { red, green, blue, alpha };
 }
 
 export {
   RGBToHex,
   RGBAToHexA,
+  RGBToHSL,
   lightOrDark,
   blink,
   getStorageData,
