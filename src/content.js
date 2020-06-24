@@ -13,15 +13,21 @@ import {
 (async function () {
   const fontsPath = chrome.extension.getURL("fonts");
 
-  const openSansFont = new FontFace(
+  const openSansRegular = new FontFace(
     "OpenSans",
     "url(" + fontsPath + "/OpenSans-Regular.ttf)"
   );
-  openSansFont
-    .load()
-    .then((fontFace) => {
-      document.fonts.add(fontFace);
-      document.body.style.fontFamily = '"OpenSans", Arial';
+  const openSansBold = new FontFace(
+    "OpenSans",
+    "url(" + fontsPath + "/OpenSans-Bold.ttf)",
+    { weight: "700" }
+  );
+  Promise.all([openSansRegular.load(), openSansBold.load()])
+    .then((loadedFonts) => {
+      // Render them at the same time
+      loadedFonts.forEach(function (font) {
+        document.fonts.add(font);
+      });
     })
     .catch((error) => {
       // error occurred
@@ -353,7 +359,7 @@ import {
 
   async function updateMagnifierInfo() {
     const colorFormat = await getStorageData("colorFormat");
-    const {red, green, blue, alpha} = currentColor;
+    const { red, green, blue, alpha } = currentColor;
     const hex = "#" + RGBToHex(red, green, blue, alpha);
 
     magnifierInfo.style.backgroundColor = hex;
@@ -409,7 +415,7 @@ import {
     } else if (event.key === "\\") {
       const currentColorFormat = await getStorageData("colorFormat");
       const nextColorFormat = (currentColorFormat + 1) % allColorFormats.length;
-      await setStorageData({colorFormat: nextColorFormat});
+      await setStorageData({ colorFormat: nextColorFormat });
       updateMagnifierInfo();
     }
   }
@@ -515,17 +521,19 @@ import {
 
   async function showNotification(color, colorValue) {
     const colorBlock = notification.querySelector("div");
-    const {red, green, blue, alpha} = color;
+    const { red, green, blue, alpha } = color;
     const hex = "#" + RGBToHex(red, green, blue, alpha);
 
     colorBlock.style.backgroundColor = `rgba(${red},${green},${blue},${alpha})`;
-    colorBlock.style.borderWidth = '1px';
-    colorBlock.style.borderStyle = 'solid';
-    colorBlock.style.borderColor = lightOrDark(hex) === 'light' ? '#666' : '#FFF';
+    colorBlock.style.borderWidth = "1px";
+    colorBlock.style.borderStyle = "solid";
+    colorBlock.style.borderColor =
+      lightOrDark(hex) === "light" ? "#666" : "#FFF";
 
     const p = notification.querySelector("p");
-    p.innerHTML =
-      '<span style="font-weight:bold;">' + colorValue + "</span> Copied";
+    p.innerHTML = "<strong>" + colorValue + "</strong>";
+    p.style.fontFamily = "OpenSans";
+    p.style.fontWeight = "700";
 
     notification.style.opacity = "1";
     notification.style.top = "10px";
@@ -597,7 +605,7 @@ import {
           if (!event.altKey) {
             quit();
           }
-          await copyColor({red, green, blue, alpha});
+          await copyColor({ red, green, blue, alpha });
         });
       });
     });
@@ -605,19 +613,17 @@ import {
 
   createNotification();
 
-  chrome.runtime.onMessage.addListener(async (
-    request,
-    sender,
-    sendResponse
-  ) => {
-    if (request.cmd === "start") {
-      updateImageData(request.dataUri);
-      window.addEventListener("resize", quit);
-    } else if (request.cmd === "copy") {
-      await copyColor(request.color);
-    } else if (request.cmd === "quit") {
-      window.removeEventListener("resize", quit);
-      quit();
+  chrome.runtime.onMessage.addListener(
+    async (request, sender, sendResponse) => {
+      if (request.cmd === "start") {
+        updateImageData(request.dataUri);
+        window.addEventListener("resize", quit);
+      } else if (request.cmd === "copy") {
+        await copyColor(request.color);
+      } else if (request.cmd === "quit") {
+        window.removeEventListener("resize", quit);
+        quit();
+      }
     }
-  });
+  );
 })();
