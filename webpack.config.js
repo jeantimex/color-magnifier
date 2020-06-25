@@ -41,7 +41,7 @@ const commonConfig = merge([
   parts.copy({
     patterns: [
       { from: './src/manifest.json' },
-      //{ context: './src/assets', from: 'icon-**', to: 'assets' },
+      { context: './src/icons', from: 'icon-**', to: 'icons' },
     ],
   }),
 ]);
